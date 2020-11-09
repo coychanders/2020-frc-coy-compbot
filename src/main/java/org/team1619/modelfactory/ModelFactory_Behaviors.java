@@ -32,8 +32,13 @@ public class ModelFactory_Behaviors extends AbstractModelFactory {
 
 		switch (name) {
 
-			case "bh_example":
-				return new Behavior_Example(fSharedInputValues, fSharedOutputValues, config, fRobotConfiguration);
+			// Drivetrain
+			case "bh_drivetrain_zero":
+				return new Drivetrain_Zero(fSharedInputValues, fSharedOutputValues, config, fRobotConfiguration);
+			case "bh_drivetrain_percent":
+				return new Drivetrain_Percent(fSharedInputValues, fSharedOutputValues, config, fRobotConfiguration);
+			case "bh_drivetrain_velocity":
+				return new Drivetrain_Velocity(fSharedInputValues, fSharedOutputValues, config, fRobotConfiguration);
 
 			// State not found
 			default:

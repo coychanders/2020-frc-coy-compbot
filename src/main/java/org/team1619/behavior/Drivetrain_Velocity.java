@@ -28,6 +28,7 @@ public class Drivetrain_Velocity implements Behavior {
 	private final String fYAxisID;
 	private final String fXAxisID;
 	private final String fGearShiftID;
+	private final Double fVelocityScalarFeetPerSecond;
 
 	public Drivetrain_Velocity(InputValues inputValues, OutputValues outputValues, Config config, RobotConfiguration robotConfiguration) {
 		fSharedInputValues = inputValues;
@@ -36,6 +37,7 @@ public class Drivetrain_Velocity implements Behavior {
 		fYAxisID = robotConfiguration.getString("global_drivetrain","y_control");
 		fXAxisID = robotConfiguration.getString("global_drivetrain","x_control");
 		fGearShiftID = robotConfiguration.getString("global_drivetrain","gearshift_control");
+		fVelocityScalarFeetPerSecond = robotConfiguration.getDouble("global_drivetrain", "velocity_scalar_feetpersecond");
 	}
 
 	@Override
@@ -62,12 +64,9 @@ public class Drivetrain_Velocity implements Behavior {
 			rightPower = rightPower/Math.abs(rightPower);
 		}
 
-		//todo - currently the only difference between percent and velocity is setting the motor values. Should this just be handled inside percent vs having so much duplicate code?
-
-		//todo - should 12 be hard coded here? should it be inside the velocity code using the scaler in the motor parameters?
-		// Set motor velocity - Max is 12 feet per second
-		fSharedOutputValues.setNumeric("opn_drivetrain_left", "velocity", leftPower * 12, "pr_drive");
-		fSharedOutputValues.setNumeric("opn_drivetrain_right", "velocity", rightPower * 12, "pr_drive");
+		// Set motor velocity
+		fSharedOutputValues.setNumeric("opn_drivetrain_left", "velocity", leftPower * fVelocityScalarFeetPerSecond, "pr_drive");
+		fSharedOutputValues.setNumeric("opn_drivetrain_right", "velocity", rightPower * fVelocityScalarFeetPerSecond, "pr_drive");
 
 		// Set gear shifter
 		fSharedOutputValues.setBoolean("opb_gearshift", gearShift);

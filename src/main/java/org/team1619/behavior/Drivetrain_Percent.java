@@ -53,10 +53,6 @@ public class Drivetrain_Percent implements Behavior {
 		double leftPower = yAxis + xAxis;
 		double rightPower = yAxis - xAxis;
 
-		//todo - is this a better way to scale? In compbot, we subtract the difference which could be off.
-		// todo - y = 1, x = .5, left = y+x = 1.5, right = y-x = .5
-		// todo - compbot -> left = 1, right = .5 - .5 = 0, this would be spinning in a circle not going forward while turning to the right
-		// todo - this code -> left = 1, right = .5/1.5 = .33, this seems more like what you want. forward with a strong right arc
 		// Scale so the power can never exceed 1.0
 		if(Math.abs(leftPower) > 1.0){
 			rightPower = rightPower/Math.abs(leftPower);

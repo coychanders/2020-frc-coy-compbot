@@ -54,7 +54,8 @@ public class Drivetrain_Zero implements Behavior {
 			return;
 		}
 
-		//todo - should we be zeroing the enoders over and over like this? If we assume the robot is stationary, should we call them just once in initialize()?
+		//todo - We call zero every frame as it is possible for it to be missed. There is an issue logged for this
+
 		// Zero encoders
 		fSharedOutputValues.setOutputFlag("opn_drivetrain_left", "zero");
 		fSharedOutputValues.setOutputFlag("opn_drivetrain_right", "zero");
@@ -74,7 +75,6 @@ public class Drivetrain_Zero implements Behavior {
 
 	@Override
 	public void dispose() {
-	//todo - do we need to set motors to zero when they have already been set that way in initialize()?
 	}
 
 	@Override

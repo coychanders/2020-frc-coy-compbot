@@ -42,8 +42,8 @@ global_drivetrain:
   y_control: ipn_driver_left_y
   x_control: ipn_driver_right_x
   gearshift_control: ipb_driver_left_trigger
-#  todo - in compbot, the velocity mode is tied to the drivers right trigger, which is also their shoot button. Is this correct?
   velocity_mode_control: ipb_driver_right_bumper
+  velocity_scalar_feetpersecond: 12.0
 
 
 log:

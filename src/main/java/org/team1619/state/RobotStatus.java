@@ -22,7 +22,6 @@ public class RobotStatus extends AbstractRobotStatus {
 		super(inputValues, robotConfiguration);
 	}
 
-	//todo - in compbot, ipb_robot_has_been_zeroed is never initialized. Is it OK to assume it will be false?
 	@Override
 	public void initialize() {
 		// Zero

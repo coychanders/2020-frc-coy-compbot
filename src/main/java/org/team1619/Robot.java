@@ -46,7 +46,7 @@ public class Robot extends TimedRobot {
 		fInputService = fInjector.getInstance(InputService.class);
 		OutputService outputService = fInjector.getInstance(OutputService.class);
 		LoggingService loggingService = fInjector.getInstance(LoggingService.class);
-		// TODO comment out to turn off webdashboard service
+		// Comment out to turn off webdashboard service
 		WebDashboardService webDashboardService = fInjector.getInstance(WebDashboardService.class);
 
 		ScheduledMultiService coreService = new ScheduledMultiService(new Scheduler(10), fInputService, statesService, outputService);
@@ -54,7 +54,7 @@ public class Robot extends TimedRobot {
 
 		fServiceManager = new AsyncServiceManager(coreService, infoService);
 
-		// TODO comment in to when turning off webdashboard service
+		// Comment in to when turning off webdashboard service
 		//fServiceManager = new ScheduledLinearServiceManager(new Scheduler(30), Set.of(statesService, fInputService, outputService, loggingService));
 
 		fFMS = fInjector.getInstance(FMS.class);

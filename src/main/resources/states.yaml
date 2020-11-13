@@ -5,7 +5,7 @@ single_state:
   st_drivetrain_zero:
     behavior: bh_drivetrain_zero
     behavior_config:
-      zeroing_threshold: 0.1
+      zeroing_threshold: 1.0
 
   st_drivetrain_percent:
     behavior: bh_drivetrain_states
@@ -17,13 +17,68 @@ single_state:
     behavior_config:
       mode: velocity
 
+  # ------ Collector ------
 
+  st_collector_zero:
+    behavior: bh_collector_zero
+    behavior_config:
+      zeroing_threshold: 0.1
+      solenoid_extended: true
+      roller_speed: 0.0
+
+  st_collector_intake_floor:
+    behavior: bh_collector_states
+    behavior_config:
+      solenoid_extended: true
+      roller_speed: 0.9
+
+  st_collector_intake_wall:
+    behavior: bh_collector_states
+    behavior_config:
+      solenoid_extended: true
+      roller_speed: -0.2
+
+  st_collector_extend:
+    behavior: bh_collector_states
+    behavior_config:
+      solenoid_extended: true
+      roller_speed: 0.0
+
+  st_collector_retract:
+    behavior: bh_collector_states
+    behavior_config:
+      solenoid_extended: false
+      roller_speed: 0.0
+
+  st_collector_eject:
+    behavior: bh_collector_states
+    behavior_config:
+      solenoid_extended: true
+      roller_speed: -0.2
 
 
 
 done_for_time_state:
 
 parallel_state:
+
+  pl_intake_floor:
+    foreground_states: [st_collector_intake_floor]
+
+  pl_intake_wall:
+    foreground_states: [st_collector_intake_wall]
+
+  pl_prime:
+    foreground_states: []
+
+  pl_shoot:
+    foreground_states: []
+
+  pl_dejam:
+    foreground_states: []
+
+  pl_protect:
+    foreground_states: [st_collector_retract]
 
 sequencer_state:
 

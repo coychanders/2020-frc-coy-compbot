@@ -15,6 +15,13 @@ public class TeleopModeLogic extends AbstractModeLogic {
 
 	private static final Logger sLogger = LogManager.getLogger(TeleopModeLogic.class);
 
+	private Boolean mFloorCollect = false;
+	private Boolean mWallCollect = false;
+	private Boolean mPrime = false;
+	private Boolean mShoot = false;
+	private Boolean mDejam = false;
+	private Boolean mProtect = false;
+
 	public TeleopModeLogic(InputValues inputValues, RobotConfiguration robotConfiguration) {
 		super(inputValues, robotConfiguration);
 	}
@@ -22,11 +29,67 @@ public class TeleopModeLogic extends AbstractModeLogic {
 	@Override
 	public void initialize() {
 		sLogger.info("***** TELEOP *****");
+
+		mFloorCollect = false;
+		mWallCollect = false;
+		mPrime = false;
+		mShoot = false;
+		mDejam = false;
+		mProtect = false;
 	}
 
 	@Override
 	public void update() {
 
+		// Protect
+		if(fSharedInputValues.getBooleanRisingEdge("ipb_operator_dpad_right")){
+			mFloorCollect = false;
+			mWallCollect = false;
+			mPrime = false;
+			mShoot = false;
+			mProtect = true;
+		}
+
+		// Floor Collect
+		if(fSharedInputValues.getBooleanRisingEdge("ipb_operator_left_trigger")){
+			mFloorCollect = !mFloorCollect;
+			mWallCollect = false;
+			if(mFloorCollect) {
+				mPrime = false;
+				mShoot = false;
+			}
+			mProtect = false;
+		}
+
+		// Wall Collect
+		if(fSharedInputValues.getBooleanRisingEdge("ipb_operator_left_bumper")){
+			mWallCollect = !mWallCollect;
+			mFloorCollect = false;
+			if(mWallCollect) {
+				mPrime = false;
+				mShoot = false;
+			}
+			mProtect = false;
+		}
+
+		// Prime
+		if(fSharedInputValues.getBooleanRisingEdge("ipb_operator_right_bumper")){
+			mPrime = !mPrime;
+			if(mPrime){
+				mFloorCollect = false;
+				mWallCollect = false;
+			}
+			mShoot = false;
+			mProtect = false;
+		}
+
+		// Shoot - If either the driver or the operator pull their right trigger AND the system is priming AND either the system is ready to shoot or the operator overrides with the left dPad
+		mShoot = ((fSharedInputValues.getBoolean("ipb_operator_right_trigger") || fSharedInputValues.getBoolean("ipb_driver_right_trigger"))
+				&& mPrime
+				&& (fSharedInputValues.getBoolean("ipb_primed_to_shoot") || fSharedInputValues.getBoolean("ipb_operator_dpad_left")));
+
+		// Dejam
+		mDejam = fSharedInputValues.getBoolean("ipb_operator_dpad_up");
 	}
 
 	@Override
@@ -37,12 +100,29 @@ public class TeleopModeLogic extends AbstractModeLogic {
 	@Override
 	public boolean isReady(String name) {
 		switch (name) {
-			//Drivetrain
+			// Zeros
 			case "st_drivetrain_zero":
 				return !fSharedInputValues.getBoolean("ipb_drivetrain_has_been_zeroed");
+			case "st_collector_zero":
+				return !fSharedInputValues.getBoolean("ipb_collector_has_been_zeroed");
+
+			// Drivetrain
 			case "st_drivetrain_velocity":
 				return fSharedInputValues.getBoolean(fRobotConfiguration.getString("global_drivetrain", "velocity_mode_control"));
 
+			// Parallels
+			case "pl_intake_floor":
+				return mFloorCollect;
+			case "pl_intake_wall":
+				return mWallCollect;
+			case "pl_prime":
+				return mPrime;
+			case "pl_shoot":
+				return mShoot;
+			case "pl_dejam":
+				return mDejam;
+			case "pl_protect":
+				return mProtect;
 			default:
 				return false;
 		}
@@ -53,6 +133,18 @@ public class TeleopModeLogic extends AbstractModeLogic {
 		switch (name) {
 			case "st_drivetrain_velocity":
 				return !fSharedInputValues.getBoolean(fRobotConfiguration.getString("global_drivetrain", "velocity_mode_control"));
+			case "pl_intake_floor":
+				return !mFloorCollect;
+			case "pl_intake_wall":
+				return !mWallCollect;
+			case "pl_prime":
+				return !mPrime;
+			case "pl_shoot":
+				return !mShoot;
+			case "pl_dejam":
+				return !mDejam;
+			case "pl_protect":
+				return !mProtect;
 			default:
 				return state.isDone();
 		}

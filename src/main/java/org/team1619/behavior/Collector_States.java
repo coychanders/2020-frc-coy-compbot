@@ -12,7 +12,7 @@ import org.uacr.utilities.logging.Logger;
 import java.util.Set;
 
 /**
- * Zeros the drivetrain encoders
+ * Controls the collector - extend/retract and rollers on/off
  */
 
 public class Collector_States implements Behavior {

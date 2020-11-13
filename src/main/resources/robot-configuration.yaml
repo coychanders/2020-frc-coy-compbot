@@ -8,7 +8,7 @@ general:
       priority_level_1: []
     parallels:
       priority_level_2: [pl_dejam]
-      priority_level_1: [pl_protect, pl_intake_floor, pl_intake_wall, pl_shoot]
+      priority_level_1: [pl_protect, pl_intake_floor, pl_intake_wall, pl_shoot, pl_protect]
     ss_drivetrain:
       priority_level_1: [st_drivetrain_zero, st_drivetrain_velocity]
       default: [st_drivetrain_percent]
@@ -18,7 +18,8 @@ general:
 
   subsystems: [ss_drivetrain, ss_collector]
 
-  input_booleans: [ipb_driver_left_trigger, ipb_driver_right_bumper, ipb_operator_left_trigger, ipb_operator_left_bumper, ipb_operator_right_trigger, ipb_operator_right_bumper]
+  input_booleans: [ipb_driver_left_trigger, ipb_driver_right_bumper,
+                   ipb_operator_left_trigger, ipb_operator_left_bumper, ipb_operator_right_trigger, ipb_operator_right_bumper, ipb_operator_dpad_up, ipb_operator_dpad_right]
 
   input_numerics: [ipn_driver_left_y, ipn_driver_right_x]
 
@@ -45,8 +46,8 @@ global_drivetrain:
   y_control: ipn_driver_left_y
   x_control: ipn_driver_right_x
   gearshift_control: ipb_driver_left_trigger
-#  todo - in compbot, the velocity mode is tied to the drivers right trigger, which is also their shoot button. Is this correct?
   velocity_mode_control: ipb_driver_right_bumper
+  velocity_scalar_feetpersecond: 12.0
 
 global_collector:
 

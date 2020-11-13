@@ -15,12 +15,12 @@ public class TeleopModeLogic extends AbstractModeLogic {
 
 	private static final Logger sLogger = LogManager.getLogger(TeleopModeLogic.class);
 
-	Boolean mFloorCollect;
-	Boolean mWallCollect;
-	Boolean mPrime;
-	Boolean mShoot;
-	Boolean mDejam;
-	Boolean mProtect;
+	private Boolean mFloorCollect = false;
+	private Boolean mWallCollect = false;
+	private Boolean mPrime = false;
+	private Boolean mShoot = false;
+	private Boolean mDejam = false;
+	private Boolean mProtect = false;
 
 	public TeleopModeLogic(InputValues inputValues, RobotConfiguration robotConfiguration) {
 		super(inputValues, robotConfiguration);
@@ -121,6 +121,8 @@ public class TeleopModeLogic extends AbstractModeLogic {
 				return mShoot;
 			case "pl_dejam":
 				return mDejam;
+			case "pl_protect":
+				return mProtect;
 			default:
 				return false;
 		}
@@ -141,6 +143,8 @@ public class TeleopModeLogic extends AbstractModeLogic {
 				return !mShoot;
 			case "pl_dejam":
 				return !mDejam;
+			case "pl_protect":
+				return !mProtect;
 			default:
 				return state.isDone();
 		}

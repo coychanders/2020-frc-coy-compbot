@@ -12,7 +12,7 @@ import org.uacr.utilities.logging.Logger;
 import java.util.Set;
 
 /**
- * Zeros the drivetrain encoders
+ * Zeros the collector
  */
 
 public class Collector_Zero implements Behavior {
@@ -22,14 +22,15 @@ public class Collector_Zero implements Behavior {
 
 	private final InputValues fSharedInputValues;
 	private final OutputValues fSharedOutputValues;
-	private final Timer mTimer;
-	private final int mZeroTimeOut;
+	private final Timer fTimer;
+	private final int fZeroTimeOut;
 
 	public Collector_Zero(InputValues inputValues, OutputValues outputValues, Config config, RobotConfiguration robotConfiguration) {
 		fSharedInputValues = inputValues;
 		fSharedOutputValues = outputValues;
-		mZeroTimeOut = robotConfiguration.getInt("global_all", "zero_timeout");
-		mTimer = new Timer();
+
+		fZeroTimeOut = robotConfiguration.getInt("global_all", "zero_timeout");
+		fTimer = new Timer();
 	}
 
 	@Override
@@ -42,7 +43,7 @@ public class Collector_Zero implements Behavior {
 		fSharedOutputValues.setNumeric("opn_collector_rollers", "percent", rollerSpeed);
 		fSharedOutputValues.setBoolean("opb_collector_extended", solenoidExtended);
 
-		mTimer.start(mZeroTimeOut);
+		fTimer.start(fZeroTimeOut);
 	}
 
 	@Override
@@ -54,7 +55,7 @@ public class Collector_Zero implements Behavior {
 		}
 
 		// Give the solenoid time to move into position
-		if(mTimer.isDone()){
+		if(fTimer.isDone()){
 			fSharedInputValues.setBoolean("ipb_collector_has_been_zeroed", true);
 		}
 	}

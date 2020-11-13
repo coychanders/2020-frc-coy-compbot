@@ -22,28 +22,28 @@ public class Drivetrain_Zero implements Behavior {
 
 	private final InputValues fSharedInputValues;
 	private final OutputValues fSharedOutputValues;
-	private Timer mTimer;
-	private int mZeroTimeOut;
-	private Double fZeroingThreshold;
+	private final Timer fTimer;
+	private final int fZeroTimeOut;
+	private Double mZeroingThreshold;
 
 	public Drivetrain_Zero(InputValues inputValues, OutputValues outputValues, Config config, RobotConfiguration robotConfiguration) {
 		fSharedInputValues = inputValues;
 		fSharedOutputValues = outputValues;
-		mZeroTimeOut = robotConfiguration.getInt("global_all", "zero_timeout");
-		mTimer = new Timer();
+		fZeroTimeOut = robotConfiguration.getInt("global_all", "zero_timeout");
+		fTimer = new Timer();
 	}
 
 	@Override
 	public void initialize(String stateName, Config config) {
 		sLogger.debug("Entering state {}", stateName);
 
-		fZeroingThreshold = config.getDouble("zeroing_threshold");
+		mZeroingThreshold = config.getDouble("zeroing_threshold");
 
 		// Stop wheel motors
 		fSharedOutputValues.setNumeric("opn_drivetrain_left", "percent", 0);
 		fSharedOutputValues.setNumeric("opn_drivetrain_right", "percent", 0);
 
-		mTimer.start(mZeroTimeOut);
+		fTimer.start(fZeroTimeOut);
 	}
 
 	@Override
@@ -65,14 +65,14 @@ public class Drivetrain_Zero implements Behavior {
 		// really means that the encoder absolute value is within a small threshold from zero.
 		double left = fSharedInputValues.getNumeric("ipn_drivetrain_left_primary_position");
 		double right = fSharedInputValues.getNumeric("ipn_drivetrain_right_primary_position");
-		boolean leftIsZeroed = Math.abs(left) < fZeroingThreshold;
-		boolean rightIsZeroed = Math.abs(right) < fZeroingThreshold;
+		boolean leftIsZeroed = Math.abs(left) < mZeroingThreshold;
+		boolean rightIsZeroed = Math.abs(right) < mZeroingThreshold;
 		if (leftIsZeroed && rightIsZeroed) {
 			fSharedInputValues.setBoolean("ipb_drivetrain_has_been_zeroed", true);
 		}
 
 		// If the encoders do not read zero by the end of the timer, move on so the robot is not stuck waiting to zero
-		if(mTimer.isDone()){
+		if(fTimer.isDone()){
 			fSharedInputValues.setBoolean("ipb_drivetrain_has_been_zeroed", true);
 			sLogger.error("Drivetrain failed to zero");
 		}

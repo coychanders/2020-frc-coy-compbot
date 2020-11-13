@@ -56,13 +56,18 @@ public class Drivetrain_Zero implements Behavior {
 
 		//todo - We call zero every frame as it is possible for it to be missed. There is an issue logged for this
 
-		// Zero encoders
+		// Instruct the encoders to zero at the end of the current frame.
 		fSharedOutputValues.setOutputFlag("opn_drivetrain_left", "zero");
 		fSharedOutputValues.setOutputFlag("opn_drivetrain_right", "zero");
 
-		// Check encoders read zero
-		if((Math.abs(fSharedInputValues.getNumeric("ipn_drivetrain_left_primary_position")) < fZeroingThreshold)
-			&& (Math.abs(fSharedInputValues.getNumeric("ipn_drivetrain_right_primary_position")) < fZeroingThreshold)){
+		// Check if the encoders have finished zeroing.
+		// The encoders may move slightly off true-zero due to physical forces, so "zeroed"
+		// really means that the encoder absolute value is within a small threshold from zero.
+		double left = fSharedInputValues.getNumeric("ipn_drivetrain_left_primary_position");
+		double right = fSharedInputValues.getNumeric("ipn_drivetrain_right_primary_position");
+		boolean leftIsZeroed = Math.abs(left) < fZeroingThreshold;
+		boolean rightIsZeroed = Math.abs(right) < fZeroingThreshold;
+		if (leftIsZeroed && rightIsZeroed) {
 			fSharedInputValues.setBoolean("ipb_drivetrain_has_been_zeroed", true);
 		}
 

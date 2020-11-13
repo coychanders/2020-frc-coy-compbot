@@ -54,12 +54,10 @@ public class Drivetrain_Percent implements Behavior {
 		double rightPower = yAxis - xAxis;
 
 		// Scale so the power can never exceed 1.0
-		if(Math.abs(leftPower) > 1.0){
-			rightPower = rightPower/Math.abs(leftPower);
-			leftPower = leftPower/Math.abs(leftPower);
-		} else if (Math.abs(rightPower) > 1.0){
-			leftPower = leftPower/Math.abs(rightPower);
-			rightPower = rightPower/Math.abs(rightPower);
+		double maxPowerAbs = Math.max(Math.abs(leftPower), Math.abs(rightPower));
+		if(maxPowerAbs > 1.0) {
+			rightPower = rightPower / maxPowerAbs;
+			leftPower = leftPower / maxPowerAbs;
 		}
 
 		// Set motors

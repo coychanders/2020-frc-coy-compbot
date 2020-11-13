@@ -8,10 +8,15 @@ single_state:
       zeroing_threshold: 0.1
 
   st_drivetrain_percent:
-    behavior: bh_drivetrain_percent
+    behavior: bh_drivetrain_states
+    behavior_config:
+      mode: percent
 
   st_drivetrain_velocity:
-    behavior: bh_drivetrain_velocity
+    behavior: bh_drivetrain_states
+    behavior_config:
+      mode: velocity
+
 
 
 

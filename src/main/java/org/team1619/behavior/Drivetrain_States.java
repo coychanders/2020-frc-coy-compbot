@@ -5,21 +5,20 @@ import org.uacr.shared.abstractions.InputValues;
 import org.uacr.shared.abstractions.OutputValues;
 import org.uacr.shared.abstractions.RobotConfiguration;
 import org.uacr.utilities.Config;
-import org.uacr.utilities.Timer;
 import org.uacr.utilities.logging.LogManager;
 import org.uacr.utilities.logging.Logger;
 
 import java.util.Set;
 
 /**
- * Controls the robot drivetrain motors in velocity mode
+ * Controls the robot drivetrain motors in percent power mode
  * Forward is left Y joystick - rotate is the right X joystick
  * The left triggers shifts into low gear
  */
 
-public class Drivetrain_Velocity implements Behavior {
+public class Drivetrain_States implements Behavior {
 
-	private static final Logger sLogger = LogManager.getLogger(Drivetrain_Velocity.class);
+	private static final Logger sLogger = LogManager.getLogger(Drivetrain_States.class);
 	private static final Set<String> sSubsystems = Set.of("ss_drivetrain");
 
 	private final InputValues fSharedInputValues;
@@ -30,7 +29,10 @@ public class Drivetrain_Velocity implements Behavior {
 	private final String fGearShiftID;
 	private final Double fVelocityScalarFeetPerSecond;
 
-	public Drivetrain_Velocity(InputValues inputValues, OutputValues outputValues, Config config, RobotConfiguration robotConfiguration) {
+	private String mMode;
+
+
+	public Drivetrain_States(InputValues inputValues, OutputValues outputValues, Config config, RobotConfiguration robotConfiguration) {
 		fSharedInputValues = inputValues;
 		fSharedOutputValues = outputValues;
 
@@ -44,6 +46,7 @@ public class Drivetrain_Velocity implements Behavior {
 	public void initialize(String stateName, Config config) {
 		sLogger.debug("Entering state {}", stateName);
 
+		mMode = config.getString("mode");
 	}
 
 	@Override
@@ -62,9 +65,14 @@ public class Drivetrain_Velocity implements Behavior {
 			leftPower = leftPower / maxPowerAbs;
 		}
 
-		// Set motor velocity
-		fSharedOutputValues.setNumeric("opn_drivetrain_left", "velocity", leftPower * fVelocityScalarFeetPerSecond, "pr_drive");
-		fSharedOutputValues.setNumeric("opn_drivetrain_right", "velocity", rightPower * fVelocityScalarFeetPerSecond, "pr_drive");
+		// Set motors
+		if(mMode.equals("velocity")){
+			fSharedOutputValues.setNumeric("opn_drivetrain_left", "velocity", leftPower * fVelocityScalarFeetPerSecond, "pr_drive");
+			fSharedOutputValues.setNumeric("opn_drivetrain_right", "velocity", rightPower * fVelocityScalarFeetPerSecond, "pr_drive");
+		} else {
+			fSharedOutputValues.setNumeric("opn_drivetrain_left", "percent", leftPower);
+			fSharedOutputValues.setNumeric("opn_drivetrain_right", "percent", rightPower);
+		}
 
 		// Set gear shifter
 		fSharedOutputValues.setBoolean("opb_gearshift", gearShift);

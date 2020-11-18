@@ -44,6 +44,18 @@ public class ModelFactory_Behaviors extends AbstractModelFactory {
 			case "bh_collector_states":
 				return new Collector_States(fSharedInputValues, fSharedOutputValues, config, fRobotConfiguration);
 
+			// Hopper
+			case "bh_hopper_zero":
+				return new Hopper_Zero(fSharedInputValues, fSharedOutputValues, config, fRobotConfiguration);
+			case "bh_hopper_states":
+				return new Hopper_States(fSharedInputValues, fSharedOutputValues, config, fRobotConfiguration);
+
+			// Elevator
+			case "bh_elevator_zero":
+				return new Elevator_Zero(fSharedInputValues, fSharedOutputValues, config, fRobotConfiguration);
+			case "bh_elevator_states":
+				return new Elevator_States(fSharedInputValues, fSharedOutputValues, config, fRobotConfiguration);
+
 
 			// State not found
 			default:

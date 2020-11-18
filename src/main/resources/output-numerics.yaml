@@ -72,9 +72,35 @@ talon:
     peak_current_limit_amps: 30
     peak_current_duration_milliseconds: 100
 
+  # Collector
   opn_collector_rollers:
     device_number: 5
     inverted: true
+
+  # Hopper
+  opn_hopper:
+    device_number: 4
+    inverted: true
+
+  # Elevator
+  opn_elevator_primary:
+    device_number: 9
+    inverted: true
+    feedback_device: quad_encoder
+    read_position: true
+    read_velocity: true
+    position_scalar: 0.00471698
+    velocity_scalar: 0.00471698
+
+  opn_elevator_follower:
+    device_number: 8
+    inverted: true
+    feedback_device: quad_encoder
+    sensor_inverted: true
+    read_position: true
+    position_scalar: 0.004656
+    position_input_name: ipn_drivetrain_right_position
+
 
 victor:
 
@@ -87,3 +113,7 @@ motor_group:
   opn_drivetrain_right:
     master: opn_drivetrain_right_primary
     followers: [opn_drivetrain_right_follower_1]
+
+  opn_elevator:
+    master: opn_elevator_primary
+    followers: [opn_elevator_follower]

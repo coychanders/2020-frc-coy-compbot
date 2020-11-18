@@ -56,29 +56,106 @@ single_state:
       solenoid_extended: true
       roller_speed: -0.2
 
+  # ------ Hopper ------
+
+  st_hopper_zero:
+    behavior: bh_hopper_zero
+    behavior_config:
+      zeroing_threshold: 1
+
+  st_hopper_load_elevator:
+    behavior: bh_hopper_states
+    behavior_config:
+      kicker_extended: true
+      hopper_speed: 0.6
+
+  st_hopper_collect:
+    behavior: bh_hopper_states
+    behavior_config:
+      kicker_extended: false
+      hopper_speed: 0.6
+
+  st_hopper_home:
+    behavior: bh_hopper_states
+    behavior_config:
+      kicker_extended: false
+      hopper_speed: 0.2
+
+  st_hopper_shoot:
+    behavior: bh_hopper_states
+    behavior_config:
+      kicker_extended: true
+      hopper_speed: 0.8
+
+  st_hopper_stop:
+    behavior: bh_hopper_states
+    behavior_config:
+      kicker_extended: false
+      hopper_speed: 0.0
+
+  # ------ Collector ------
+
+  st_elevator_zero:
+    behavior: bh_elevator_zero
+    behavior_config:
+      zeroing_threshold: 1
+
+  st_elevator_load_ball:
+    behavior: bh_elevator_states
+    behavior_config:
+      elevator_speed: 0.2
+      sense_ball: true
+
+  st_elevator_prime:
+    behavior: bh_elevator_states
+    behavior_config:
+      elevator_speed: -0.2
+      time: 200
+
+  st_elevator_shoot:
+    behavior: bh_elevator_states
+    behavior_config:
+      elevator_speed: 0.8
+
+  st_elevator_stop:
+    behavior: bh_elevator_states
+    behavior_config:
+      elevator_speed: 0.0
+
+
+
 
 
 done_for_time_state:
 
 parallel_state:
 
+  pl_load_ball_into_elevator:
+    foreground_states: [st_elevator_load_ball]
+    background_states: [st_hopper_load_elevator]
+
+  pl_collect_balls:
+    foreground_states: [st_elevator_stop, st_hopper_collect]
+
   pl_intake_floor:
-    foreground_states: [st_collector_intake_floor]
+    foreground_states: [st_collector_intake_floor, sq_load_ball]
 
   pl_intake_wall:
-    foreground_states: [st_collector_intake_wall]
+    foreground_states: [st_collector_intake_wall, sq_load_ball]
 
   pl_prime:
-    foreground_states: []
+    foreground_states: [st_hopper_home]
 
   pl_shoot:
-    foreground_states: []
+    foreground_states: [st_hopper_shoot]
 
   pl_dejam:
     foreground_states: []
 
   pl_protect:
-    foreground_states: [st_collector_retract]
+    foreground_states: [st_collector_retract, st_hopper_stop]
 
 sequencer_state:
 
+  sq_load_ball:
+    sequence: [pl_load_ball_into_elevator, pl_collect_balls]

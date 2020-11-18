@@ -98,9 +98,9 @@ controller_button:
     button: right_stick_button
 
 digital_input:
-#  ipb_elevator_beam_sensor:
-#    id: 0
-#    inverted: true
+  ipb_elevator_ball_sensor:
+    id: 0
+    inverted: false
 
 
 

@@ -7,3 +7,7 @@ solenoid_double:
     device_number_master: 2
     device_number_slave: 5
 
+  opb_hopper_kicker_extended:
+    device_number_master: 3
+    device_number_slave: 4
+

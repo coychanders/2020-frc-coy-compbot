@@ -15,17 +15,18 @@ import java.util.Set;
  * Zeros the collector
  */
 
-public class Collector_Zero implements Behavior {
+public class Hopper_Zero implements Behavior {
 
-	private static final Logger sLogger = LogManager.getLogger(Collector_Zero.class);
-	private static final Set<String> sSubsystems = Set.of("ss_collector");
+	private static final Logger sLogger = LogManager.getLogger(Hopper_Zero.class);
+	private static final Set<String> sSubsystems = Set.of("ss_hopper");
 
 	private final InputValues fSharedInputValues;
 	private final OutputValues fSharedOutputValues;
 	private final Timer fTimer;
 	private final int fZeroTimeOut;
+	private double mZeroingThreshold;
 
-	public Collector_Zero(InputValues inputValues, OutputValues outputValues, Config config, RobotConfiguration robotConfiguration) {
+	public Hopper_Zero(InputValues inputValues, OutputValues outputValues, Config config, RobotConfiguration robotConfiguration) {
 		fSharedInputValues = inputValues;
 		fSharedOutputValues = outputValues;
 
@@ -37,11 +38,9 @@ public class Collector_Zero implements Behavior {
 	public void initialize(String stateName, Config config) {
 		sLogger.debug("Entering state {}", stateName);
 
-		boolean solenoidExtended = config.getBoolean("solenoid_extended");
-		double rollerSpeed = config.getDouble("roller_speed");
-
-		fSharedOutputValues.setNumeric("opn_collector_rollers", "percent", rollerSpeed);
-		fSharedOutputValues.setBoolean("opb_collector_extended", solenoidExtended);
+		fSharedOutputValues.setBoolean("opb_hopper_kicker_extended", false);
+		fSharedOutputValues.setNumeric("opn_hopper", "percent", 0);
+		mZeroingThreshold = config.getDouble("zeroing_threshold", 0);
 
 		fTimer.start(fZeroTimeOut);
 	}
@@ -49,25 +48,34 @@ public class Collector_Zero implements Behavior {
 	@Override
 	public void update() {
 
-		// Do not proceed if the collector has already been zeroed
-		if(fSharedInputValues.getBoolean("ipb_collector_has_been_zeroed")){
+		// Do not proceed if the hopper has already been zeroed
+		if(fSharedInputValues.getBoolean("ipb_hopper_has_been_zeroed")){
 			return;
 		}
 
-		// Give the solenoid time to move into position
+		// Zero encoder
+		//todo - fix bug so we only need to call setOutputFlag once in initialize()
+		fSharedOutputValues.setOutputFlag("opn_hopper", "zero");
+		if(Math.abs(fSharedInputValues.getNumeric("ipb_hopper_position")) < mZeroingThreshold){
+			fSharedInputValues.setBoolean("ipb_collector_has_been_zeroed", true);
+			sLogger.debug("Hopper -> Zeroed");
+		}
+
+		// Time out
 		if(fTimer.isDone()){
 			fSharedInputValues.setBoolean("ipb_collector_has_been_zeroed", true);
-			sLogger.debug("Collector -> Zeroed");
+			sLogger.error("Hopper -> Zero timed out");
 		}
 	}
 
 	@Override
 	public void dispose() {
+
 	}
 
 	@Override
 	public boolean isDone() {
-		return fSharedInputValues.getBoolean("ipb_collector_has_been_zeroed");
+		return fSharedInputValues.getBoolean("ipb_hopper_has_been_zeroed");
 	}
 
 	@Override

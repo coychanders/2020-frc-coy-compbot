@@ -15,10 +15,10 @@ import java.util.Set;
  * Zeros the collector
  */
 
-public class Hopper_Zero implements Behavior {
+public class Turret_Zero implements Behavior {
 
-	private static final Logger sLogger = LogManager.getLogger(Hopper_Zero.class);
-	private static final Set<String> sSubsystems = Set.of("ss_hopper");
+	private static final Logger sLogger = LogManager.getLogger(Turret_Zero.class);
+	private static final Set<String> sSubsystems = Set.of("ss_turret");
 
 	private final InputValues fSharedInputValues;
 	private final OutputValues fSharedOutputValues;
@@ -26,7 +26,7 @@ public class Hopper_Zero implements Behavior {
 	private final int fZeroTimeOut;
 	private double mZeroingThreshold;
 
-	public Hopper_Zero(InputValues inputValues, OutputValues outputValues, Config config, RobotConfiguration robotConfiguration) {
+	public Turret_Zero(InputValues inputValues, OutputValues outputValues, Config config, RobotConfiguration robotConfiguration) {
 		fSharedInputValues = inputValues;
 		fSharedOutputValues = outputValues;
 
@@ -38,9 +38,10 @@ public class Hopper_Zero implements Behavior {
 	public void initialize(String stateName, Config config) {
 		sLogger.debug("Entering state {}", stateName);
 
-		fSharedOutputValues.setBoolean("opb_hopper_kicker_extended", false);
-		fSharedOutputValues.setNumeric("opn_hopper", "percent", 0);
+		double zeroingSpeed = config.getDouble("zeroing_speed", 0);
 		mZeroingThreshold = config.getDouble("zeroing_threshold", 0);
+
+		fSharedOutputValues.setNumeric("opn_turret", "percent", zeroingSpeed);
 
 		fTimer.start(fZeroTimeOut);
 	}
@@ -49,33 +50,33 @@ public class Hopper_Zero implements Behavior {
 	public void update() {
 
 		// Do not proceed if the hopper has already been zeroed
-		if(fSharedInputValues.getBoolean("ipb_hopper_has_been_zeroed")){
+		if(fSharedInputValues.getBoolean("ipb_turret_has_been_zeroed")){
 			return;
 		}
 
-		// Zero encoder
-		//todo - fix bug so we only need to call setOutputFlag once in initialize()
-		fSharedOutputValues.setOutputFlag("opn_hopper", "zero");
-		if(Math.abs(fSharedInputValues.getNumeric("ipb_hopper_position")) < mZeroingThreshold){
-			fSharedInputValues.setBoolean("ipb_hopper_has_been_zeroed", true);
-			sLogger.debug("Hopper -> Zeroed");
+		if(Math.abs(fSharedInputValues.getNumeric("ipn_turret_velocity")) < mZeroingThreshold){
+			fSharedOutputValues.setNumeric("opn_turret", "percent", 0);
+			fSharedOutputValues.setOutputFlag("opn_turret", "zero");
+			fSharedInputValues.setBoolean("ipb_turret_has_been_zeroed", true);
+			sLogger.debug("Turret -> Zeroed");
 		}
 
 		// Time out
 		if(fTimer.isDone()){
-			fSharedInputValues.setBoolean("ipb_hopper_has_been_zeroed", true);
-			sLogger.error("Hopper -> Zero timed out");
+			fSharedInputValues.setBoolean("ipb_turret_has_been_zeroed", true);
+			fSharedOutputValues.setNumeric("opn_turret", "percent", 0);
+			sLogger.error("Turret -> Zero timed out");
 		}
 	}
 
 	@Override
 	public void dispose() {
-
+		fSharedOutputValues.setNumeric("opn_turret", "percent", 0.0);
 	}
 
 	@Override
 	public boolean isDone() {
-		return fSharedInputValues.getBoolean("ipb_hopper_has_been_zeroed");
+		return fSharedInputValues.getBoolean("ipb_turret_has_been_zeroed");
 	}
 
 	@Override

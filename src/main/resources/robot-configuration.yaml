@@ -21,9 +21,15 @@ general:
     ss_elevator:
       priority_level_1: [st_elevator_zero, st_elevator_load_ball, st_elevator_prime, st_elevator_shoot]
       default: [st_elevator_stop]
+    ss_flywheel:
+      priority_level_1: [st_flywheel_zero, st_flywheel_prime, st_flywheel_shoot, st_flywheel_shoot_limelight, st_flywheel_stop]
+      default: [st_flywheel_coast]
+    ss_turret:
+      priority_level_1: [st_turret_zero, st_turret_left, st_turret_right, st_turret_limelight]
+      default: [st_turret_center]
 
 
-  subsystems: [ss_drivetrain, ss_collector, ss_hopper, ss_elevator]
+  subsystems: [ss_drivetrain, ss_collector, ss_hopper, ss_elevator, ss_flywheel, ss_turret]
 
   input_booleans: [ipb_driver_left_trigger, ipb_driver_right_bumper,
                    ipb_operator_left_trigger, ipb_operator_left_bumper, ipb_operator_right_trigger, ipb_operator_right_bumper, ipb_operator_dpad_up, ipb_operator_dpad_right,
@@ -63,9 +69,17 @@ global_hopper:
 
 global_elevator:
 
-global_flywheels:
+global_flywheel:
+  macro_adjust: ipn_operator_left_y
+  micro_adjust: ipn_operator_left_x
+  macro_scalar: 10
+  micro_scalar: 1
 
 global_turret:
+  macro_adjust: ipn_operator_right_y
+  micro_adjust: ipn_operator_right_x
+  macro_scalar: 10
+  micro_scalar: 1
 
 
 

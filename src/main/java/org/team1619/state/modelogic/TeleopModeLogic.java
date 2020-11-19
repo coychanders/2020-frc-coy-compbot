@@ -105,6 +105,14 @@ public class TeleopModeLogic extends AbstractModeLogic {
 				return !fSharedInputValues.getBoolean("ipb_drivetrain_has_been_zeroed");
 			case "st_collector_zero":
 				return !fSharedInputValues.getBoolean("ipb_collector_has_been_zeroed");
+			case "st_hopper_zero":
+				return !fSharedInputValues.getBoolean("ipb_hopper_has_been_zeroed");
+			case "st_elevator_zero":
+				return !fSharedInputValues.getBoolean("ipb_elevator_has_been_zeroed");
+			case "st_flywheel_zero":
+				return !fSharedInputValues.getBoolean("ipb_flywheel_has_been_zeroed");
+			case "st_turret_zero":
+				return !fSharedInputValues.getBoolean("ipb_turret_has_been_zeroed");
 
 			// Drivetrain
 			case "st_drivetrain_velocity":

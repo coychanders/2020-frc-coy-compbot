@@ -61,7 +61,7 @@ single_state:
   st_hopper_zero:
     behavior: bh_hopper_zero
     behavior_config:
-      zeroing_threshold: 1
+      zeroing_threshold: 1.0
 
   st_hopper_load_elevator:
     behavior: bh_hopper_states
@@ -93,12 +93,12 @@ single_state:
       kicker_extended: false
       hopper_speed: 0.0
 
-  # ------ Collector ------
+  # ------ Elevator ------
 
   st_elevator_zero:
     behavior: bh_elevator_zero
     behavior_config:
-      zeroing_threshold: 1
+      zeroing_threshold: 1.0
 
   st_elevator_load_ball:
     behavior: bh_elevator_states
@@ -122,7 +122,92 @@ single_state:
     behavior_config:
       elevator_speed: 0.0
 
+  # ------ Flywheel ------
 
+  st_flywheel_zero:
+    behavior: bh_flywheel_zero
+    behavior_config:
+      zeroing_threshold: 1.0
+
+  st_flywheel_prime:
+    behavior: bh_flywheel_states
+    behavior_config:
+      flywheel_velocity: 6000
+      velocity_profile: "pr_prime"
+      velocity_max_error: 200
+      allow_adjust: true
+      turbo_percent: 0.9
+      turbo_cutoff_velocity: 5500
+      limelight: ipv_limelight_turret
+
+  st_flywheel_shoot:
+    behavior: bh_flywheel_states
+    behavior_config:
+    flywheel_velocity: 6000
+    velocity_profile: "pr_shoot"
+    velocity_max_error: 200
+    allow_adjust: true
+
+  st_flywheel_shoot_limelight:
+    behavior: bh_flywheel_states
+    behavior_config:
+      flywheel_velocity: 6000
+      velocity_profile: "pr_shoot"
+      velocity_max_error: 200
+      allow_adjust: true
+      limelight: ipv_limelight_turret
+
+  st_flywheel_coast:
+    behavior: bh_flywheel_states
+    behavior_config:
+      flywheel_velocity: 0
+      coast: true
+
+  st_flywheel_stop:
+    behavior: bh_flywheel_states
+    behavior_config:
+      flywheel_velocity: 0
+      coast: false
+
+  # ------ Turret ------
+
+  st_turret_zero:
+    behavior: bh_turret_zero
+    behavior_config:
+      zeroing_speed: -0.3
+      zeroing_threshold: 1.0
+
+  st_turret_left:
+    behavior: bh_turret_states
+    behavior_config:
+      turret_angle: 155.0
+      allow_adjust: true
+      profile: pr_position
+      position_threshold: 2
+
+  st_turret_center:
+    behavior: bh_turret_states
+    behavior_config:
+      turret_angle: 57.2
+      allow_adjust: true
+      profile: pr_position
+      position_threshold: 2
+
+  st_turret_right:
+    behavior: bh_turret_states
+    behavior_config:
+      turret_angle: 2.0
+      allow_adjust: true
+      profile: pr_position
+      position_threshold: 2
+
+  st_turret_limelight:
+    behavior: bh_turret_states
+    behavior_config:
+      turret_angle: 2.0
+      allow_adjust: true
+      profile: pr_position
+      position_threshold: 2
 
 
 
@@ -135,7 +220,7 @@ parallel_state:
     background_states: [st_hopper_load_elevator]
 
   pl_collect_balls:
-    foreground_states: [st_elevator_stop, st_hopper_collect]
+    foreground_states: [st_hopper_collect]
 
   pl_intake_floor:
     foreground_states: [st_collector_intake_floor, sq_load_ball]
@@ -144,16 +229,16 @@ parallel_state:
     foreground_states: [st_collector_intake_wall, sq_load_ball]
 
   pl_prime:
-    foreground_states: [st_hopper_home]
+    foreground_states: [st_hopper_home, st_elevator_prime, st_flywheel_prime]
 
   pl_shoot:
-    foreground_states: [st_hopper_shoot]
+    foreground_states: [st_hopper_shoot, st_elevator_shoot, st_flywheel_shoot]
 
   pl_dejam:
     foreground_states: []
 
   pl_protect:
-    foreground_states: [st_collector_retract, st_hopper_stop]
+    foreground_states: [st_collector_retract]
 
 sequencer_state:
 

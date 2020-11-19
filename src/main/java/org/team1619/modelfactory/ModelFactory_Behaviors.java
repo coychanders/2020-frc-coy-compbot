@@ -56,6 +56,18 @@ public class ModelFactory_Behaviors extends AbstractModelFactory {
 			case "bh_elevator_states":
 				return new Elevator_States(fSharedInputValues, fSharedOutputValues, config, fRobotConfiguration);
 
+			// Flywheel
+			case "bh_flywheel_zero":
+				return new Flywheels_Zero(fSharedInputValues, fSharedOutputValues, config, fRobotConfiguration);
+			case "bh_flywheel_states":
+				return new Flywheels_States(fSharedInputValues, fSharedOutputValues, config, fRobotConfiguration);
+
+			// Turret
+			case "bh_turret_zero":
+				return new Turret_Zero(fSharedInputValues, fSharedOutputValues, config, fRobotConfiguration);
+			case "bh_turret_states":
+				return new Turret_States(fSharedInputValues, fSharedOutputValues, config, fRobotConfiguration);
+
 
 			// State not found
 			default:

@@ -8,7 +8,7 @@ general:
       priority_level_1: [sq_load_ball]
     parallels:
       priority_level_2: [pl_dejam]
-      priority_level_1: [pl_protect, pl_intake_floor, pl_intake_wall, pl_shoot, pl_protect, pl_load_ball_into_elevator, pl_collect_balls]
+      priority_level_1: [pl_protect, pl_intake_floor, pl_intake_wall, pl_prime, pl_shoot, pl_protect, pl_load_ball_into_elevator, pl_collect_balls]
     ss_drivetrain:
       priority_level_1: [st_drivetrain_zero, st_drivetrain_velocity]
       default: [st_drivetrain_percent]
@@ -33,15 +33,15 @@ general:
 
   input_booleans: [ipb_driver_left_trigger, ipb_driver_right_bumper,
                    ipb_operator_left_trigger, ipb_operator_left_bumper, ipb_operator_right_trigger, ipb_operator_right_bumper, ipb_operator_dpad_up, ipb_operator_dpad_right,
-                   ipb_elevator_ball_sensor]
+                   ipb_hopper_home_switch, ipb_elevator_beam_sensor]
 
-  input_numerics: [ipn_driver_left_y, ipn_driver_right_x]
+  input_numerics: [ipn_driver_left_y, ipn_driver_right_x, ipn_operator_left_y, ipn_operator_left_x, ipn_operator_right_y, ipn_operator_right_x]
 
   input_vectors: []
 
-  output_numerics: [opn_drivetrain_left, opn_drivetrain_right, opn_collector_rollers, opn_hopper, opn_elevator]
+  output_numerics: [opn_drivetrain_left, opn_drivetrain_right, opn_collector_rollers, opn_hopper, opn_elevator, opn_flywheel, opn_turret]
 
-  output_booleans: [opb_collector_extended, opb_hopper_kicker_extended]
+  output_booleans: [opb_collector_extend, opb_hopper_kicker]
 
 
 global_timing:
@@ -78,8 +78,10 @@ global_flywheel:
 global_turret:
   macro_adjust: ipn_operator_right_y
   micro_adjust: ipn_operator_right_x
-  macro_scalar: 10
-  micro_scalar: 1
+  macro_scalar: 1
+  micro_scalar: .1
+  min_angle: 2
+  max_angle: 160
 
 
 

@@ -22,6 +22,8 @@ public class Hopper_States implements Behavior {
 	private final InputValues fSharedInputValues;
 	private final OutputValues fSharedOutputValues;
 
+	private boolean fHomeHopper;
+
 
 	public Hopper_States(InputValues inputValues, OutputValues outputValues, Config config, RobotConfiguration robotConfiguration) {
 		fSharedInputValues = inputValues;
@@ -34,23 +36,26 @@ public class Hopper_States implements Behavior {
 
 		boolean kicker = config.getBoolean("kicker_extended");
 		double hopperSpeed = config.getDouble("hopper_speed");
-
-		fSharedInputValues.setBoolean("opb_hopper_kicker_extended", kicker);
+		fHomeHopper = config.getBoolean("home_hopper", false);
+		
+		fSharedOutputValues.setBoolean("opb_hopper_kicker", kicker);
 		fSharedOutputValues.setNumeric("opn_hopper", "percent", hopperSpeed);
 	}
 
 	@Override
 	public void update() {
+
 		// Look for homing switch
-		if(fSharedInputValues.getBoolean("ipb_hopper_home_switch")){
+		if(fHomeHopper && fSharedInputValues.getBoolean("ipb_hopper_home_switch")){
 			fSharedOutputValues.setNumeric("opn_hopper", "percent", 0.0);
+			fHomeHopper = false;
 			sLogger.debug("Hopper -> Homed");
 		}
 	}
 
 	@Override
 	public void dispose() {
-		fSharedInputValues.setBoolean("opb_hopper_kicker_extended", false);
+		fSharedInputValues.setBoolean("opb_hopper_kicker", false);
 		fSharedOutputValues.setNumeric("opn_hopper", "percent", 0.0);
 	}
 

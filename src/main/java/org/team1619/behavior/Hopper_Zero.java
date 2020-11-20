@@ -38,7 +38,7 @@ public class Hopper_Zero implements Behavior {
 	public void initialize(String stateName, Config config) {
 		sLogger.debug("Entering state {}", stateName);
 
-		fSharedOutputValues.setBoolean("opb_hopper_kicker_extended", false);
+		fSharedOutputValues.setBoolean("opb_hopper_kicker", false);
 		fSharedOutputValues.setNumeric("opn_hopper", "percent", 0);
 		mZeroingThreshold = config.getDouble("zeroing_threshold", 0);
 

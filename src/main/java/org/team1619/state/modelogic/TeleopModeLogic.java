@@ -84,9 +84,17 @@ public class TeleopModeLogic extends AbstractModeLogic {
 		}
 
 		// Shoot - If either the driver or the operator pull their right trigger AND the system is priming AND either the system is ready to shoot or the operator overrides with the left dPad
-		mShoot = ((fSharedInputValues.getBoolean("ipb_operator_right_trigger") || fSharedInputValues.getBoolean("ipb_driver_right_trigger"))
-				&& mPrime
-				&& (fSharedInputValues.getBoolean("ipb_primed_to_shoot") || fSharedInputValues.getBoolean("ipb_operator_dpad_left")));
+		if((fSharedInputValues.getBoolean("ipb_operator_right_trigger") || fSharedInputValues.getBoolean("ipb_driver_right_trigger"))
+				&& (fSharedInputValues.getBoolean("ipb_primed_to_shoot") || fSharedInputValues.getBoolean("ipb_operator_dpad_left"))){
+			mShoot = true;
+			mPrime = false;
+		}
+
+		if(fSharedInputValues.getBooleanFallingEdge("ipb_operator_right_trigger") || fSharedInputValues.getBooleanFallingEdge("ipb_driver_right_trigger")){
+			mShoot = false;
+			mPrime = true;
+		}
+
 
 		// Dejam
 		mDejam = fSharedInputValues.getBoolean("ipb_operator_dpad_up");

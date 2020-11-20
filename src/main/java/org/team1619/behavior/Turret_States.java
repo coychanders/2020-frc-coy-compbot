@@ -25,7 +25,9 @@ public class Turret_States implements Behavior {
 	private final String fMacroAdjustID;
 	private final String fMicroAdjustID;
 	private final int fMacroScalar;
-	private final int fMicroScalar;
+	private final double fMicroScalar;
+	private final int fMinAngle;
+	private final int fMaxAngle;
 
 	private boolean mAllowAdjustment;
 	private double mTurretAngle;
@@ -40,11 +42,12 @@ public class Turret_States implements Behavior {
 		fSharedInputValues = inputValues;
 		fSharedOutputValues = outputValues;
 
-		fMacroAdjustID = robotConfiguration.getString("global_flywheel", "macro_adjust");
-		fMicroAdjustID = robotConfiguration.getString("global_flywheel", "micro_adjust");
-		fMacroScalar = robotConfiguration.getInt("global_flywheel", "macro_scalar");
-		fMicroScalar = robotConfiguration.getInt("global_flywheel", "micro_scalar");
-
+		fMacroAdjustID = robotConfiguration.getString("global_turret", "macro_adjust");
+		fMicroAdjustID = robotConfiguration.getString("global_turret", "micro_adjust");
+		fMacroScalar = robotConfiguration.getInt("global_turret", "macro_scalar");
+		fMicroScalar = robotConfiguration.getDouble("global_turret", "micro_scalar");
+		fMinAngle = robotConfiguration.getInt("global_turret", "min_angle");
+		fMaxAngle = robotConfiguration.getInt("global_turret", "max_angle");
 	}
 
 	@Override
@@ -53,7 +56,7 @@ public class Turret_States implements Behavior {
 
 		mTurretAngle = config.getDouble("turret_angle");
 		mAllowAdjustment = config.getBoolean("allow_adjust", false);
-		mProfile = config.getString("profile", "");
+		mProfile = config.getString("profile", "pr_position");
 		mPositionThreshold = config.getInt("position_threshold", 10);
 
 	}
@@ -71,6 +74,13 @@ public class Turret_States implements Behavior {
 		}
 
 		double desiredPosition = mTurretAngle + mAngleAdjustment;
+
+		if(desiredPosition < fMinAngle){
+			desiredPosition = fMinAngle;
+		}
+		if(desiredPosition > fMaxAngle){
+			desiredPosition = fMaxAngle;
+		}
 
 		fSharedOutputValues.setNumeric("opn_turret", "motion_magic", desiredPosition, mProfile);
 

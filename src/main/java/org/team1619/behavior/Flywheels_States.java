@@ -54,7 +54,7 @@ public class Flywheels_States implements Behavior {
 		sLogger.debug("Entering state {}", stateName);
 
 		mVelocity = config.getInt("flywheel_velocity", 0);
-		mProfile = config.getString("profile", "");
+		mProfile = config.getString("profile", "pr_prime");
 		mVelocityThreshold = config.getInt("velocity_threshold", 100);
 		mAllowAdjustment = config.getBoolean("allow_adjust", false);
 		mCoast = config.getBoolean("coast", false);
@@ -64,7 +64,7 @@ public class Flywheels_States implements Behavior {
 
 		mUpToSpeed = false;
 
-		fSharedInputValues.setBoolean("ipb_flywheel_primed", false);
+		fSharedInputValues.setBoolean("ipb_primed_to_shoot", false);
 	}
 
 	@Override
@@ -84,8 +84,8 @@ public class Flywheels_States implements Behavior {
 		if ((mVelocity + mVelocityAdjustment) > 8000) {
 			mVelocityAdjustment = 8000 - mVelocity;
 		}
-		if ((mVelocity + mVelocityAdjustment) < -1000) {
-			mVelocityAdjustment = mVelocity - 1000;
+		if ((mVelocity + mVelocityAdjustment) < mTurboCutoffVelocity + 100) {
+			mVelocityAdjustment = mTurboCutoffVelocity + 100 - mVelocity;
 		}
 
 		// Turbo prevents the velocity mode from throwing 100% power at the motors and throwing the breakers by using a lower percent power mode until close to the final velocity
@@ -98,7 +98,7 @@ public class Flywheels_States implements Behavior {
 			// Uses velocity mode to maintain flywheel speed
 			fSharedOutputValues.setNumeric("opn_flywheel", "velocity", mVelocity + mVelocityAdjustment, mProfile);
 			if(mTurboPercent > 0) {
-				fSharedInputValues.setBoolean("ipb_flywheel_primed", true);
+				fSharedInputValues.setBoolean("ipb_primed_to_shoot", true);
 			}
 		}
 

@@ -67,19 +67,20 @@ single_state:
     behavior: bh_hopper_states
     behavior_config:
       kicker_extended: true
-      hopper_speed: 0.6
+      hopper_speed: 0.4
 
   st_hopper_collect:
     behavior: bh_hopper_states
     behavior_config:
       kicker_extended: false
-      hopper_speed: 0.6
+      hopper_speed: 0.4
 
   st_hopper_home:
     behavior: bh_hopper_states
     behavior_config:
       kicker_extended: false
       hopper_speed: 0.2
+      home_hopper: true
 
   st_hopper_shoot:
     behavior: bh_hopper_states
@@ -143,10 +144,10 @@ single_state:
   st_flywheel_shoot:
     behavior: bh_flywheel_states
     behavior_config:
-    flywheel_velocity: 6000
-    velocity_profile: "pr_shoot"
-    velocity_max_error: 200
-    allow_adjust: true
+      flywheel_velocity: 6000
+      velocity_profile: "pr_shoot"
+      velocity_max_error: 200
+      allow_adjust: true
 
   st_flywheel_shoot_limelight:
     behavior: bh_flywheel_states
@@ -174,8 +175,8 @@ single_state:
   st_turret_zero:
     behavior: bh_turret_zero
     behavior_config:
-      zeroing_speed: -0.3
-      zeroing_threshold: 1.0
+      zeroing_speed: -0.2
+      zeroing_threshold: 0.1
 
   st_turret_left:
     behavior: bh_turret_states

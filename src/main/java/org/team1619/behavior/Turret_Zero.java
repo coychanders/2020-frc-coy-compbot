@@ -25,6 +25,7 @@ public class Turret_Zero implements Behavior {
 	private final Timer fTimer;
 	private final int fZeroTimeOut;
 	private double mZeroingThreshold;
+	private final Timer fStartMovingDelayTimer;
 
 	public Turret_Zero(InputValues inputValues, OutputValues outputValues, Config config, RobotConfiguration robotConfiguration) {
 		fSharedInputValues = inputValues;
@@ -32,6 +33,7 @@ public class Turret_Zero implements Behavior {
 
 		fZeroTimeOut = robotConfiguration.getInt("global_all", "zero_timeout");
 		fTimer = new Timer();
+		fStartMovingDelayTimer = new Timer();
 	}
 
 	@Override
@@ -43,7 +45,8 @@ public class Turret_Zero implements Behavior {
 
 		fSharedOutputValues.setNumeric("opn_turret", "percent", zeroingSpeed);
 
-		fTimer.start(fZeroTimeOut);
+		fTimer.start(500);
+		fStartMovingDelayTimer.start(100);
 	}
 
 	@Override
@@ -54,11 +57,13 @@ public class Turret_Zero implements Behavior {
 			return;
 		}
 
-		if(Math.abs(fSharedInputValues.getNumeric("ipn_turret_velocity")) < mZeroingThreshold){
-			fSharedOutputValues.setNumeric("opn_turret", "percent", 0);
-			fSharedOutputValues.setOutputFlag("opn_turret", "zero");
-			fSharedInputValues.setBoolean("ipb_turret_has_been_zeroed", true);
-			sLogger.debug("Turret -> Zeroed");
+		if(fStartMovingDelayTimer.isDone()) {
+			if (Math.abs(fSharedInputValues.getNumeric("ipn_turret_velocity")) < mZeroingThreshold) {
+				fSharedOutputValues.setNumeric("opn_turret", "percent", 0);
+				fSharedOutputValues.setOutputFlag("opn_turret", "zero");
+				fSharedInputValues.setBoolean("ipb_turret_has_been_zeroed", true);
+				sLogger.debug("Turret -> Zeroed");
+			}
 		}
 
 		// Time out

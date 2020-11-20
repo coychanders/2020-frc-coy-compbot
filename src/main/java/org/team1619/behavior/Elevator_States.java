@@ -5,6 +5,7 @@ import org.uacr.shared.abstractions.InputValues;
 import org.uacr.shared.abstractions.OutputValues;
 import org.uacr.shared.abstractions.RobotConfiguration;
 import org.uacr.utilities.Config;
+import org.uacr.utilities.Timer;
 import org.uacr.utilities.logging.LogManager;
 import org.uacr.utilities.logging.Logger;
 
@@ -22,13 +23,16 @@ public class Elevator_States implements Behavior {
 	private final InputValues fSharedInputValues;
 	private final OutputValues fSharedOutputValues;
 
+	private final Timer fTimer;
+
 	private Boolean mSenseBall;
 	private Boolean mBallFound;
-
 
 	public Elevator_States(InputValues inputValues, OutputValues outputValues, Config config, RobotConfiguration robotConfiguration) {
 		fSharedInputValues = inputValues;
 		fSharedOutputValues = outputValues;
+
+		fTimer = new Timer();
 	}
 
 	@Override
@@ -37,14 +41,32 @@ public class Elevator_States implements Behavior {
 
 		mSenseBall = config.getBoolean("sense_ball", false);
 		double elevatorSpeed = config.getDouble("elevator_speed");
+
 		mBallFound = false;
 
 		fSharedOutputValues.setNumeric("opn_elevator", "percent", elevatorSpeed);
+
+		int time = config.getInt("time", 0);
+		if(time > 0){
+			fTimer.start(time);
+		} else {
+			fTimer.reset();
+		}
 	}
 
 	@Override
 	public void update() {
-		mBallFound = fSharedInputValues.getBoolean("ipb_elevator_ball_sensor");
+		if(mSenseBall) {
+			mBallFound = fSharedInputValues.getBoolean("ipb_elevator_beam_sensor");
+			if(mBallFound){
+				fSharedOutputValues.setNumeric("opn_elevator", "percent", 0);
+			}
+		}
+
+		if(fTimer.isDone()){
+			fSharedOutputValues.setNumeric("opn_elevator", "percent", 0);
+		}
+
 	}
 
 	@Override

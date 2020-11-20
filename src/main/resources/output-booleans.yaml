@@ -1,9 +1,16 @@
 solenoid_double:
-  opb_gearshift:
+  opb_drivetrain_gear_shifter:
     device_number_master: 1
     device_number_slave: 6
 
-  opb_collector_extended:
+  opb_collector_extend:
     device_number_master: 2
     device_number_slave: 5
 
+  opb_hopper_kicker:
+    device_number_master: 3
+    device_number_slave: 4
+
+  opb_climber_deploy_and_ratchet:
+    device_number_master: 7
+    device_number_slave: 0

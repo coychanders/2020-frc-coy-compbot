@@ -41,7 +41,7 @@ public class Collector_Zero implements Behavior {
 		double rollerSpeed = config.getDouble("roller_speed");
 
 		fSharedOutputValues.setNumeric("opn_collector_rollers", "percent", rollerSpeed);
-		fSharedOutputValues.setBoolean("opb_collector_extended", solenoidExtended);
+		fSharedOutputValues.setBoolean("opb_collector_extend", solenoidExtended);
 
 		fTimer.start(fZeroTimeOut);
 	}
@@ -49,7 +49,7 @@ public class Collector_Zero implements Behavior {
 	@Override
 	public void update() {
 
-		// Do not proceed if the drivetrain has already been zeroed
+		// Do not proceed if the collector has already been zeroed
 		if(fSharedInputValues.getBoolean("ipb_collector_has_been_zeroed")){
 			return;
 		}
@@ -57,6 +57,7 @@ public class Collector_Zero implements Behavior {
 		// Give the solenoid time to move into position
 		if(fTimer.isDone()){
 			fSharedInputValues.setBoolean("ipb_collector_has_been_zeroed", true);
+			sLogger.debug("Collector -> Zeroed");
 		}
 	}
 

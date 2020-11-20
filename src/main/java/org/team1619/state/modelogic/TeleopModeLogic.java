@@ -84,9 +84,17 @@ public class TeleopModeLogic extends AbstractModeLogic {
 		}
 
 		// Shoot - If either the driver or the operator pull their right trigger AND the system is priming AND either the system is ready to shoot or the operator overrides with the left dPad
-		mShoot = ((fSharedInputValues.getBoolean("ipb_operator_right_trigger") || fSharedInputValues.getBoolean("ipb_driver_right_trigger"))
-				&& mPrime
-				&& (fSharedInputValues.getBoolean("ipb_primed_to_shoot") || fSharedInputValues.getBoolean("ipb_operator_dpad_left")));
+		if((fSharedInputValues.getBoolean("ipb_operator_right_trigger") || fSharedInputValues.getBoolean("ipb_driver_right_trigger"))
+				&& (fSharedInputValues.getBoolean("ipb_primed_to_shoot") || fSharedInputValues.getBoolean("ipb_operator_dpad_left"))){
+			mShoot = true;
+			mPrime = false;
+		}
+
+		if(fSharedInputValues.getBooleanFallingEdge("ipb_operator_right_trigger") || fSharedInputValues.getBooleanFallingEdge("ipb_driver_right_trigger")){
+			mShoot = false;
+			mPrime = true;
+		}
+
 
 		// Dejam
 		mDejam = fSharedInputValues.getBoolean("ipb_operator_dpad_up");
@@ -105,6 +113,14 @@ public class TeleopModeLogic extends AbstractModeLogic {
 				return !fSharedInputValues.getBoolean("ipb_drivetrain_has_been_zeroed");
 			case "st_collector_zero":
 				return !fSharedInputValues.getBoolean("ipb_collector_has_been_zeroed");
+			case "st_hopper_zero":
+				return !fSharedInputValues.getBoolean("ipb_hopper_has_been_zeroed");
+			case "st_elevator_zero":
+				return !fSharedInputValues.getBoolean("ipb_elevator_has_been_zeroed");
+			case "st_flywheel_zero":
+				return !fSharedInputValues.getBoolean("ipb_flywheel_has_been_zeroed");
+			case "st_turret_zero":
+				return !fSharedInputValues.getBoolean("ipb_turret_has_been_zeroed");
 
 			// Drivetrain
 			case "st_drivetrain_velocity":
